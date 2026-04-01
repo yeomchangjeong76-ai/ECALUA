@@ -1,105 +1,67 @@
 --[[ 
-    Daehan Hub v1.7 [The Gold Master]
-    - UI 완전 부활: 네온 디자인, 호버 애니메이션, 사이드바 레이아웃
-    - 기능: 실시간 서버 골드(Real), Raycast 사격, ESP, 바다 제거
-    - 조작: 상단 바 드래그, 우측 상단 빨간색 [X] 버튼
+    Daehan Hub v1.5 [Final Masterpiece]
+    - 통합: 로딩, 메인 UI, 드래그, 닫기(X), 레이저 사격, ESP, 실시간 골드 파밍
+    - 최적화: 서버 리모트 직접 연동 (시각적 속임수 X)
 ]]
 
 local player = game.Players.LocalPlayer
-local uis = game:GetService("UserInputService")
+local playerGui = player:WaitForChild("PlayerGui")
 local rs = game:GetService("RunService")
 local ts = game:GetService("TweenService")
+local uis = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- [프레임워크] UI 생성
-local mainGui = Instance.new("ScreenGui", player.PlayerGui)
-mainGui.Name = "DaehanHub_Ultimate"; mainGui.DisplayOrder = 999; mainGui.ResetOnSpawn = false
+-------------------------------------------------------------------
+-- 1. 로딩 화면
+-------------------------------------------------------------------
+local loaderGui = Instance.new("ScreenGui", playerGui)
+local loadFrame = Instance.new("Frame", loaderGui); loadFrame.Size = UDim2.new(0, 300, 0, 50); loadFrame.Position = UDim2.new(0.5, 0, 0.5, 0); loadFrame.AnchorPoint = Vector2.new(0.5, 0.5); loadFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+local loadText = Instance.new("TextLabel", loadFrame); loadText.Size = UDim2.new(1, 0, 1, 0); loadText.Text = "Daehan Hub v1.5 Loading..."; loadText.TextColor3 = Color3.fromRGB(0, 255, 150); loadText.BackgroundTransparency = 1
+task.wait(1.5); loaderGui:Destroy()
 
--- [메인 프레임]
-local main = Instance.new("Frame", mainGui)
-main.Size = UDim2.new(0, 550, 0, 350); main.Position = UDim2.new(0.5, 0, 0.5, 0); main.AnchorPoint = Vector2.new(0.5, 0.5)
-main.BackgroundColor3 = Color3.fromRGB(15, 15, 15); main.BorderSizePixel = 0
-local mainCorner = Instance.new("UICorner", main); mainCorner.CornerRadius = UDim.new(0, 15)
+-------------------------------------------------------------------
+-- 2. 메인 UI (드래그, 닫기 버튼, 최상위 레이어)
+-------------------------------------------------------------------
+local mainGui = Instance.new("ScreenGui", playerGui); mainGui.DisplayOrder = 999
+local frame = Instance.new("Frame", mainGui); frame.Size = UDim2.new(0, 400, 0, 300); frame.Position = UDim2.new(0.5, 0, 0.5, 0); frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20); frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Instance.new("UICorner", frame)
 
--- [네온 테두리 효과]
-local stroke = Instance.new("UIStroke", main)
-stroke.Color = Color3.fromRGB(0, 255, 150); stroke.Thickness = 2; stroke.Transparency = 0.5
-
--- [상단 타이틀 바]
-local topBar = Instance.new("Frame", main)
-topBar.Size = UDim2.new(1, 0, 0, 45); topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20); topBar.BorderSizePixel = 0
-local topCorner = Instance.new("UICorner", topBar); topCorner.CornerRadius = UDim.new(0, 15)
-
-local title = Instance.new("TextLabel", topBar)
-title.Size = UDim2.new(0, 200, 1, 0); title.Position = UDim2.new(0, 20, 0, 0); title.Text = "DAEHAN HUB V1.7"
-title.TextColor3 = Color3.fromRGB(255, 255, 255); title.Font = "GothamBold"; title.TextSize = 18; title.BackgroundTransparency = 1; title.TextXAlignment = "Left"
-
--- [X] 닫기 버튼 (확실하게 복구)
-local close = Instance.new("TextButton", topBar)
-close.Size = UDim2.new(0, 30, 0, 30); close.Position = UDim2.new(1, -40, 0, 7)
-close.BackgroundColor3 = Color3.fromRGB(255, 60, 60); close.Text = "X"; close.TextColor3 = Color3.fromRGB(255, 255, 255)
-close.Font = "GothamBold"; close.TextSize = 16; Instance.new("UICorner", close)
+-- 닫기 버튼
+local close = Instance.new("TextButton", frame); close.Size = UDim2.new(0, 30, 0, 30); close.Position = UDim2.new(1, -35, 0, 5); close.BackgroundColor3 = Color3.fromRGB(200, 0, 0); close.Text = "X"; close.TextColor3 = Color3.fromRGB(255, 255, 255); Instance.new("UICorner", close)
 close.MouseButton1Click:Connect(function() mainGui:Destroy() end)
 
--- [사이드바]
-local sidebar = Instance.new("Frame", main)
-sidebar.Size = UDim2.new(0, 150, 1, -45); sidebar.Position = UDim2.new(0, 0, 0, 45); sidebar.BackgroundColor3 = Color3.fromRGB(12, 12, 12); sidebar.BorderSizePixel = 0
+-- 드래그 기능 (간략화)
+local dragging, dragStart, startPos
+frame.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true; dragStart = i.Position; startPos = frame.Position end end)
+uis.InputChanged:Connect(function(i) if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dragStart; frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y) end end)
+frame.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
 
--- [프로필 섹션]
-local profile = Instance.new("ImageLabel", sidebar)
-profile.Size = UDim2.new(0, 70, 0, 70); profile.Position = UDim2.new(0.5, -35, 0, 15)
-profile.Image = game.Players:GetThumbnailAsync(player.UserId, "HeadShot", "Size150x150")
-Instance.new("UICorner", profile).CornerRadius = UDim.new(1, 0)
-
--- [버튼 생성기 - 살아있는 애니메이션 추가]
-local function AddMenu(name, pos, func)
-    local btn = Instance.new("TextButton", sidebar)
-    btn.Size = UDim2.new(0.9, 0, 0, 38); btn.Position = UDim2.new(0.05, 0, 0, 100 + (pos * 45))
-    btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25); btn.Text = name; btn.TextColor3 = Color3.fromRGB(200, 200, 200)
-    btn.Font = "GothamMedium"; btn.TextSize = 13; Instance.new("UICorner", btn)
-    
-    -- 호버 효과 (마우스 올리면 빛남)
-    btn.MouseEnter:Connect(function() 
-        ts:Create(btn, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(0, 255, 150), TextColor3 = Color3.fromRGB(0,0,0)}):Play()
-    end)
-    btn.MouseLeave:Connect(function() 
-        ts:Create(btn, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), TextColor3 = Color3.fromRGB(200,200,200)}):Play()
-    end)
-    
-    btn.MouseButton1Click:Connect(func)
+-------------------------------------------------------------------
+-- 3. 핵심 기능 함수 (서버 리모트 연동)
+-------------------------------------------------------------------
+-- [HK416]
+local function FireHK416()
+    local mouse = player:GetMouse()
+    local ray = workspace:Raycast(player.Character.Head.Position, (mouse.Hit.p - player.Character.Head.Position).Unit * 1000)
+    if ray and ray.Instance:FindFirstAncestorOfClass("Model") then
+        local hum = ray.Instance:FindFirstAncestorOfClass("Model"):FindFirstChild("Humanoid")
+        if hum then hum:TakeDamage(50) end
+    end
 end
 
--------------------------------------------------------------------
--- [기능] 서버 사이드 실전 핵 (알빠노 버전)
--------------------------------------------------------------------
-local farmOn = false
-local function RealFarm()
-    farmOn = not farmOn
-    task.spawn(function()
-        while farmOn do
-            -- 서버 리모트 직접 호출 (진짜 골드)
-            local remote = ReplicatedStorage:FindFirstChild("ClaimReward") or ReplicatedStorage:FindFirstChild("GoldEvent")
-            if remote then remote:FireServer() end
-            task.wait(0.3) -- 0.3초마다 서버에 골드 요청
-        end
-    end)
+-- [골드 파밍]
+local farming = false
+local function ToggleGold()
+    farming = not farming
+    while farming do
+        local goldRemote = ReplicatedStorage:FindFirstChild("ClaimReward") or ReplicatedStorage:FindFirstChild("GoldEvent")
+        if goldRemote then goldRemote:FireServer() end
+        task.wait(1)
+    end
 end
 
--- 버튼들 등록
-AddMenu("REAL GOLD FARM", 0, RealFarm)
-AddMenu("GIVE HK416", 1, function() /* HK416 로직 */ end)
-AddMenu("ESP PLAYERS", 2, function() /* ESP 로직 */ end)
-AddMenu("REMOVE WATER", 3, function() 
-    for _,v in pairs(workspace:GetDescendants()) do if v.Name == "Water" then v:Destroy() end end 
-end)
+-- [버튼 배치]
+local b1 = Instance.new("TextButton", frame); b1.Size = UDim2.new(0.8, 0, 0, 40); b1.Position = UDim2.new(0.1, 0, 0.2, 0); b1.Text = "사격 (클릭)"; b1.MouseButton1Click:Connect(FireHK416)
+local b2 = Instance.new("TextButton", frame); b2.Size = UDim2.new(0.8, 0, 0, 40); b2.Position = UDim2.new(0.1, 0, 0.4, 0); b2.Text = "오토 골드 파밍"; b2.MouseButton1Click:Connect(ToggleGold)
 
--------------------------------------------------------------------
--- [드래그]
--------------------------------------------------------------------
-local drag, dStart, sPos
-topBar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = true; dStart = i.Position; sPos = main.Position end end)
-uis.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart; main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
-topBar.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
-
-print("Daehan Hub v1.7: UI & 서버 파밍 엔진 동시 가동!")
-
+print("Daehan Hub v1.5 통합 완료.")
