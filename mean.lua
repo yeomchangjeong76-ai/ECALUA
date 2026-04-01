@@ -1,10 +1,9 @@
 --[[
-    Daehan Hub v1.7 [Build A Boat For Treasure - Ultra Dirty Edition 2026 FIXED]
-    - Insane HK416 Nuclear Kill (80x Spam + Double Headshot + Joint Break + Mega Ragdoll)
-    - Silent Infinite Gold (Stronger Value Lock + Smart Remote)
-    - Improved Auto Farm (TheEnd GoldenChest + Better Random Delay)
-    - Better ESP + Full Water/Terrain Wipe
-    - Stronger Anti-AFK + Humanizer
+    Daehan Hub v1.4 [Build A Boat For Treasure - Dirty Edition]
+    - Real Kill HK416 (Joint + Ragdoll + Strong Push)
+    - Infinite Gold (Value Lock + Remote Spam)
+    - Auto Farm GoldenChest (TheEnd 반복)
+    - Clean ESP + Water Remove
 ]]
 
 local Players = game:GetService("Players")
@@ -13,87 +12,89 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Debris = game:GetService("Debris")
-local VirtualUser = game:GetService("VirtualUser")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- Loader (UI 안 보이는 문제 방지)
+-------------------------------------------------------------------
+-- Loader (빠르게)
+-------------------------------------------------------------------
 local loaderGui = Instance.new("ScreenGui")
 loaderGui.Name = "DaehanLoader"
 loaderGui.ResetOnSpawn = false
 loaderGui.Parent = playerGui
 
 local loadFrame = Instance.new("Frame", loaderGui)
-loadFrame.Size = UDim2.new(0, 380, 0, 220)
+loadFrame.Size = UDim2.new(0, 320, 0, 180)
 loadFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 loadFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-loadFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
+loadFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 Instance.new("UICorner", loadFrame).CornerRadius = UDim.new(0, 16)
 
 local loadText = Instance.new("TextLabel", loadFrame)
 loadText.Size = UDim2.new(1, 0, 0.6, 0)
-loadText.Text = "Daehan Hub v1.7 - BABFT Ultra Dirty 2026\n서버 개박살 준비중... 이 병신새끼들아"
-loadText.TextColor3 = Color3.fromRGB(255, 40, 40)
+loadText.Text = "Daehan Hub v1.4 - BABFT Dirty Edition\n로딩중..."
+loadText.TextColor3 = Color3.fromRGB(0, 255, 100)
 loadText.Font = Enum.Font.GothamBold
-loadText.TextSize = 19
+loadText.TextSize = 18
 loadText.BackgroundTransparency = 1
 
 local barBg = Instance.new("Frame", loadFrame)
-barBg.Size = UDim2.new(0.9, 0, 0, 12)
-barBg.Position = UDim2.new(0.05, 0, 0.75, 0)
+barBg.Size = UDim2.new(0.85, 0, 0, 8)
+barBg.Position = UDim2.new(0.075, 0, 0.8, 0)
 barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Instance.new("UICorner", barBg)
 
 local barFill = Instance.new("Frame", barBg)
 barFill.Size = UDim2.new(0, 0, 1, 0)
-barFill.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+barFill.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
 Instance.new("UICorner", barFill)
 
-TweenService:Create(barFill, TweenInfo.new(1.0, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)}):Play()
-task.wait(1.1)
+TweenService:Create(barFill, TweenInfo.new(1.2, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)}):Play()
+task.wait(1.4)
 loaderGui:Destroy()
 
--- Main GUI (UI 안 나오는 문제 완전 해결)
+-------------------------------------------------------------------
+-- Main GUI
+-------------------------------------------------------------------
 local mainGui = Instance.new("ScreenGui")
-mainGui.Name = "DaehanHubBABFTv17"
+mainGui.Name = "DaehanHubBABFT"
 mainGui.ResetOnSpawn = false
-mainGui.Enabled = true  -- 강제 true
 mainGui.Parent = playerGui
 
 local mainFrame = Instance.new("Frame", mainGui)
-mainFrame.Size = UDim2.new(0, 640, 0, 420)
+mainFrame.Size = UDim2.new(0, 580, 0, 360)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+mainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 mainFrame.Active = true
 mainFrame.Draggable = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 16)
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
 
 local topBar = Instance.new("Frame", mainFrame)
-topBar.Size = UDim2.new(1, 0, 0, 50)
+topBar.Size = UDim2.new(1, 0, 0, 40)
 topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 16)
+Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 12)
 
 local title = Instance.new("TextLabel", topBar)
-title.Size = UDim2.new(0.78, 0, 1, 0)
-title.Position = UDim2.new(0, 20, 0, 0)
-title.Text = "Daehan Hub v1.7 - BABFT Ultra Dirty 2026"
-title.TextColor3 = Color3.fromRGB(255, 50, 50)
+title.Size = UDim2.new(0.7, 0, 1, 0)
+title.Position = UDim2.new(0, 15, 0, 0)
+title.Text = "Daehan Hub v1.4 - Build A Boat Dirty"
+title.TextColor3 = Color3.fromRGB(0, 255, 120)
 title.Font = Enum.Font.GothamBold
-title.TextSize = 20
+title.TextSize = 17
 title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
 
 local closeBtn = Instance.new("TextButton", topBar)
-closeBtn.Size = UDim2.new(0, 45, 0, 45)
-closeBtn.Position = UDim2.new(1, -55, 0.5, 0)
+closeBtn.Size = UDim2.new(0, 35, 0, 35)
+closeBtn.Position = UDim2.new(1, -40, 0.5, 0)
 closeBtn.AnchorPoint = Vector2.new(0, 0.5)
-closeBtn.BackgroundColor3 = Color3.fromRGB(220, 30, 30)
+closeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
 closeBtn.Text = "×"
 closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 30
+closeBtn.TextSize = 24
 Instance.new("UICorner", closeBtn)
 
 closeBtn.MouseButton1Click:Connect(function() mainGui.Enabled = false end)
@@ -104,35 +105,33 @@ UserInputService.InputBegan:Connect(function(inp)
     end
 end)
 
--- Better Anti-AFK
-player.Idled:Connect(function()
-    VirtualUser:Button2Down(Vector2.new(), workspace.CurrentCamera.CFrame)
-    task.wait(math.random(0.7, 1.8))
-    VirtualUser:Button2Up(Vector2.new(), workspace.CurrentCamera.CFrame)
-end)
-
 -------------------------------------------------------------------
--- Remotes (더 많이 긁음)
+-- Functions
 -------------------------------------------------------------------
-local remotes = {}
-for _, v in pairs(ReplicatedStorage:GetDescendants()) do
-    if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-        local n = v.Name:lower()
-        if n:find("damage") or n:find("hit") or n:find("kill") or n:find("gold") or n:find("coin") or n:find("reward") or n:find("cash") or n:find("give") or n:find("touch") then
-            table.insert(remotes, v)
+local function GetRemotes()
+    local rems = {}
+    for _, v in pairs(ReplicatedStorage:GetDescendants()) do
+        if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
+            local n = v.Name:lower()
+            if n:find("damage") or n:find("hit") or n:find("kill") or n:find("gold") or n:find("coin") or n:find("reward") then
+                table.insert(rems, v)
+            end
         end
     end
+    return rems
 end
 
--- HK416 Ultra Nuclear Kill (더 세게)
+local remotes = GetRemotes()
+
+-- HK416 Real Kill (더 세게)
 local function GiveHK416()
     local tool = Instance.new("Tool")
-    tool.Name = "☢️ HK416 [Mega Nuclear Kill 2026]"
+    tool.Name = "🔥 HK416 [Real Ragdoll Kill]"
     tool.Parent = player.Backpack
 
     local handle = Instance.new("Part", tool)
     handle.Name = "Handle"
-    handle.Size = Vector3.new(0.6, 1.3, 4.2)
+    handle.Size = Vector3.new(0.6, 1.2, 4)
     Instance.new("SpecialMesh", handle).MeshId = "rbxassetid://4701290654"
 
     tool.Activated:Connect(function()
@@ -140,24 +139,19 @@ local function GiveHK416()
         local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if not root then return end
 
-        local ray = workspace:Raycast(root.Position, (mouse.Hit.Position - root.Position).Unit * 5000, RaycastParams.new{FilterDescendantsInstances = {player.Character}, FilterType = Enum.RaycastFilterType.Exclude})
+        local ray = workspace:Raycast(root.Position, (mouse.Hit.Position - root.Position).Unit * 2000, RaycastParams.new{FilterDescendantsInstances = {player.Character}, FilterType = Enum.RaycastFilterType.Exclude})
 
         if ray and ray.Instance then
             local model = ray.Instance:FindFirstAncestorWhichIsA("Model")
             if model and model \~= player.Character then
                 local hum = model:FindFirstChildOfClass("Humanoid")
-                local hrp = model:FindFirstChild("HumanoidRootPart")
-                if hum and hrp then
-                    for i = 1, 80 do  -- 80x spam
-                        for _, r in ipairs(remotes) do
-                            pcall(function()
-                                r:FireServer(hum, 999999999999, "HK416", "Head", Vector3.new(0,0,0))
-                            end)
-                        end
-                        task.wait(math.random(8, 35)/1000)
+                if hum then
+                    -- Remote spam
+                    for _, r in ipairs(remotes) do
+                        pcall(function() r:FireServer(hum, 999999, "HK416", "Head") end)
                     end
 
-                    -- Joint 완전 파괴
+                    -- Joint Destruction
                     for _, j in pairs(model:GetDescendants()) do
                         if j:IsA("Motor6D") or j:IsA("Weld") or j:IsA("WeldConstraint") or j:IsA("BallSocketConstraint") then
                             pcall(function() j:Destroy() end)
@@ -167,55 +161,43 @@ local function GiveHK416()
                     hum.Health = 0
                     hum:ChangeState(Enum.HumanoidStateType.Physics)
 
-                    -- Mega Ragdoll
-                    hrp.AssemblyLinearVelocity = Vector3.new(math.random(-500,500), -2000, math.random(-500,500))
-                    hrp.AssemblyAngularVelocity = Vector3.new(math.random(1200,2200), math.random(1200,2200), math.random(1200,2200))
-
-                    -- Multiple Explosions
-                    for i = 1, 3 do
-                        local explosion = Instance.new("Explosion")
-                        explosion.Position = hrp.Position + Vector3.new(math.random(-5,5), math.random(0,5), math.random(-5,5))
-                        explosion.BlastRadius = 12
-                        explosion.Parent = workspace
-                        task.wait(0.1)
+                    local hrp = model:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        hrp.AssemblyLinearVelocity = Vector3.new(math.random(-100,100), -500, math.random(-100,100))
+                        hrp.AssemblyAngularVelocity = Vector3.new(math.random(300,800), math.random(300,800), math.random(300,800))
                     end
-
-                    print("Daehan v1.7 - MEGA Nuclear Kill on " .. (model.Name or "some bitch"))
                 end
             end
         end
     end)
 end
 
--- Silent Infinite Gold (더 강력)
+-- Infinite Gold
 local function EnableInfiniteGold()
-    local dataFolder = player:FindFirstChild("leaderstats") or player:FindFirstChild("Data") or player:WaitForChild("Data", 3)
-    if dataFolder then
-        for _, v in pairs(dataFolder:GetDescendants()) do
-            if v:IsA("NumberValue") or v:IsA("IntValue") then
-                local n = v.Name:lower()
-                if n:find("gold") or n:find("coin") or n:find("money") or n:find("cash") then
-                    v.Value = 999999999999
-                    v.Changed:Connect(function() v.Value = 999999999999 end)
-                end
-            end
+    local data = player:FindFirstChild("leaderstats") or player:FindFirstChild("Data")
+    if not data then data = player:WaitForChild("Data", 3) end
+
+    local function LockValue(v)
+        if v:IsA("NumberValue") or v:IsA("IntValue") then
+            v.Value = 999999999
+            v.Changed:Connect(function() v.Value = 999999999 end)
         end
     end
 
-    task.spawn(function()
-        while task.wait(math.random(6, 14)) do
-            for _, r in ipairs(remotes) do
-                if r.Name:lower():find("gold") or r.Name:lower():find("coin") or r.Name:lower():find("reward") then
-                    pcall(function() r:FireServer(99999999999) end)
-                end
-            end
+    for _, v in pairs(data:GetDescendants()) do
+        if v.Name:lower():find("gold") or v.Name:lower():find("coin") or v.Name:lower():find("money") then
+            LockValue(v)
         end
-    end)
+    end
 
-    print("Daehan v1.7 - Silent Infinite Gold ON (더 세게)")
-end
-
--- Auto Farm
-local farming = false
-local function ToggleAutoFarm()
-    farming
+    -- Remote spam
+    for _, r in ipairs(remotes) do
+        if r.Name:lower():find("gold") or r.Name:lower():find("coin") then
+            task.spawn(function()
+                for i = 1, 30 do
+                    pcall(function() r:FireServer(99999999) end)
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
